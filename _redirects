@@ -1,0 +1,3 @@
+# Cloudflare Pages Redirects
+# Ensures all routes serve index.html (single page app fallback)
+/*    /index.html   200

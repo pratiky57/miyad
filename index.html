@@ -1,0 +1,1636 @@
+<!DOCTYPE html>
+<html lang="ne-NP, en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>MIYAD (म्याद) — National Renewal Register & Expiry Tracker</title>
+
+<!-- Primary SEO Meta Tags -->
+<meta name="title" content="MIYAD (म्याद) — National Renewal Register & Expiry Tracker" />
+<meta name="description" content="Official Nepal personal renewal and expiry tracker. Track driving license, vehicle bluebook tax, passport, insurance, warranties, and subscriptions with automated reminders at 30, 15, 5, and 1 days before expiry." />
+<meta name="keywords" content="Miyad, म्याद, Nagarik App, Nepal renewal tracker, bluebook renewal Nepal, driving license expiry Nepal, vehicle tax Nepal, passport renewal Nepal, citizen portal nepal" />
+<meta name="author" content="Pratik Yadav" />
+<meta name="robots" content="index, follow" />
+<link rel="canonical" href="https://miyad.yadavpratik.com.np/" />
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://miyad.yadavpratik.com.np/" />
+<meta property="og:title" content="MIYAD (म्याद) — National Renewal Register" />
+<meta property="og:description" content="Never miss a deadline. Unified renewal register for Driving License, Bluebook, Passport, and Insurance with 30, 15, 5, and 1-day email reminders." />
+<meta property="og:locale" content="ne_NP" />
+
+<!-- Twitter -->
+<meta property="twitter:card" content="summary_large_image" />
+<meta property="twitter:url" content="https://miyad.yadavpratik.com.np/" />
+<meta property="twitter:title" content="MIYAD (म्याद) — Renewal Tracker for Nepal" />
+<meta property="twitter:description" content="Never miss a deadline. Automatic alerts at 30, 15, 5, and 1 days before expiry." />
+
+<!-- Google Schema Structured Data (JSON-LD) -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "MIYAD (म्याद)",
+  "url": "https://miyad.yadavpratik.com.np",
+  "description": "National renewal and expiry deadline register for Nepal - driving license, bluebook tax, insurance, and passport.",
+  "applicationCategory": "GovernmentApplication, UtilityApplication",
+  "operatingSystem": "All",
+  "author": {
+    "@type": "Person",
+    "name": "Pratik Yadav",
+    "url": "https://yadavpratik.com.np"
+  },
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "NPR"
+  }
+}
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<!-- Supabase JS Client -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+
+<style>
+  :root {
+    --nagarik-blue: #0C44AC;
+    --nagarik-navy: #002B7F;
+    --nagarik-crimson: #DC143C;
+    --nagarik-bg: #F4F7FC;
+    --nagarik-card: #FFFFFF;
+    --nagarik-text: #1E293B;
+    --nagarik-muted: #64748B;
+    --nagarik-border: #E2E8F0;
+    --nagarik-gold: #D97706;
+    --nagarik-gold-bg: #FEF3C7;
+    --nagarik-green: #059669;
+    --nagarik-green-bg: #D1FAE5;
+    --nagarik-red-bg: #FEE2E2;
+    --nagarik-shadow: 0 4px 14px -2px rgba(12, 68, 172, 0.08), 0 2px 6px -1px rgba(0, 0, 0, 0.04);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--nagarik-bg);
+    color: var(--nagarik-text);
+    font-family: 'Plus Jakarta Sans', 'Mukta', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+  }
+
+  /* Nagarik App Top Bar */
+  .nagarik-navbar {
+    background: linear-gradient(135deg, var(--nagarik-navy) 0%, var(--nagarik-blue) 100%);
+    color: #ffffff;
+    padding: 14px 20px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 4px 16px rgba(0, 43, 127, 0.2);
+  }
+
+  .nav-inner {
+    max-width: 680px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .brand-group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .emblem-icon {
+    width: 42px;
+    height: 42px;
+    background: rgba(255, 255, 255, 0.12);
+    border: 1.5px solid rgba(255, 255, 255, 0.25);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    backdrop-filter: blur(4px);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  }
+
+  .brand-title {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .brand-logo-text {
+    font-family: 'Mukta', 'Plus Jakarta Sans', sans-serif;
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    line-height: 1.1;
+  }
+
+  .brand-badge {
+    background: var(--nagarik-crimson);
+    color: #ffffff;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 6px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .brand-nepali-sub {
+    font-size: 11.5px;
+    color: rgba(255, 255, 255, 0.82);
+    font-weight: 500;
+  }
+
+  .nav-user-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .btn-nav-auth {
+    background: rgba(255, 255, 255, 0.16);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #ffffff;
+    padding: 7px 14px;
+    border-radius: 20px;
+    font-size: 12.5px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-nav-auth:hover {
+    background: #ffffff;
+    color: var(--nagarik-blue);
+  }
+
+  /* Main App Container */
+  .container {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 20px 16px 80px;
+  }
+
+  /* Reminder Phase Notification Banner (30, 15, 5, 1 days) */
+  .reminder-schedule-banner {
+    background: #ffffff;
+    border-radius: 14px;
+    padding: 14px 16px;
+    margin-bottom: 20px;
+    border: 1px solid var(--nagarik-border);
+    box-shadow: var(--nagarik-shadow);
+  }
+
+  .banner-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+
+  .banner-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--nagarik-blue);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+
+  .banner-status-pill {
+    font-size: 11px;
+    font-weight: 700;
+    background: var(--nagarik-green-bg);
+    color: var(--nagarik-green);
+    padding: 3px 8px;
+    border-radius: 12px;
+  }
+
+  .phase-stepper {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+  }
+
+  .phase-step {
+    background: var(--nagarik-bg);
+    border: 1px solid var(--nagarik-border);
+    border-radius: 10px;
+    padding: 8px 10px;
+    text-align: center;
+    transition: all 0.15s;
+  }
+  .phase-step.active {
+    background: #EFF6FF;
+    border-color: #BFDBFE;
+  }
+
+  .phase-days {
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--nagarik-blue);
+    line-height: 1.1;
+  }
+
+  .phase-label {
+    font-size: 10.5px;
+    font-weight: 600;
+    color: var(--nagarik-muted);
+    margin-top: 2px;
+  }
+
+  /* Nagarik Service Grid (Type Selectors) */
+  .service-section-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--nagarik-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin: 18px 0 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  .stat-card {
+    background: #ffffff;
+    border: 1px solid var(--nagarik-border);
+    border-radius: 14px;
+    padding: 14px 12px;
+    text-align: center;
+    box-shadow: var(--nagarik-shadow);
+  }
+
+  .stat-card.overdue { border-top: 4px solid var(--nagarik-crimson); }
+  .stat-card.soon { border-top: 4px solid var(--nagarik-gold); }
+  .stat-card.tracked { border-top: 4px solid var(--nagarik-blue); }
+
+  .stat-card-val {
+    font-size: 26px;
+    font-weight: 800;
+    line-height: 1;
+  }
+  .stat-card.overdue .stat-card-val { color: var(--nagarik-crimson); }
+  .stat-card.soon .stat-card-val { color: var(--nagarik-gold); }
+  .stat-card.tracked .stat-card-val { color: var(--nagarik-blue); }
+
+  .stat-card-lbl {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--nagarik-muted);
+    margin-top: 6px;
+  }
+
+  /* Nagarik Primary Action Button */
+  .btn-add-nagarik {
+    width: 100%;
+    background: linear-gradient(135deg, var(--nagarik-blue) 0%, var(--nagarik-navy) 100%);
+    color: #ffffff;
+    border: none;
+    border-radius: 14px;
+    padding: 14px 20px;
+    font-size: 15px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(12, 68, 172, 0.25);
+    transition: transform 0.1s, opacity 0.2s;
+    margin-bottom: 18px;
+  }
+  .btn-add-nagarik:active { transform: scale(0.99); }
+  .btn-add-nagarik:hover { opacity: 0.95; }
+
+  /* Nagarik Document Panel (Form) */
+  .nagarik-panel {
+    background: #ffffff;
+    border: 1px solid var(--nagarik-border);
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 22px;
+    box-shadow: var(--nagarik-shadow);
+    display: none;
+    animation: slideDown 0.2s ease-out;
+  }
+  .nagarik-panel.open { display: block; }
+
+  @keyframes slideDown {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .form-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--nagarik-blue);
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .field-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .field { margin-bottom: 14px; }
+  .field label {
+    display: block;
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--nagarik-text);
+    margin-bottom: 6px;
+  }
+
+  .field input, .field select, .field textarea {
+    width: 100%;
+    background: var(--nagarik-bg);
+    border: 1.5px solid var(--nagarik-border);
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-family: inherit;
+    font-size: 14px;
+    color: var(--nagarik-text);
+    transition: border-color 0.2s;
+  }
+  .field input:focus, .field select:focus, .field textarea:focus {
+    border-color: var(--nagarik-blue);
+    background: #ffffff;
+    outline: none;
+  }
+
+  .form-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 6px;
+  }
+  .btn-submit {
+    flex: 1;
+    background: var(--nagarik-blue);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 12px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .btn-cancel {
+    background: transparent;
+    border: 1.5px solid var(--nagarik-border);
+    color: var(--nagarik-muted);
+    border-radius: 10px;
+    padding: 12px 18px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  /* Nagarik Service List & Document Cards */
+  .document-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .doc-card {
+    background: #ffffff;
+    border-radius: 14px;
+    border: 1px solid var(--nagarik-border);
+    box-shadow: var(--nagarik-shadow);
+    overflow: hidden;
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .doc-card:hover {
+    box-shadow: 0 6px 18px rgba(12, 68, 172, 0.1);
+  }
+
+  .doc-card-inner {
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    cursor: pointer;
+  }
+
+  .doc-icon-badge {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    flex-shrink: 0;
+  }
+  .type-license { background: #EEF2FF; color: var(--nagarik-blue); }
+  .type-vehicle { background: #ECFDF5; color: var(--nagarik-green); }
+  .type-insurance { background: #FFFBEB; color: var(--nagarik-gold); }
+  .type-passport { background: #F5F3FF; color: #7C3AED; }
+  .type-other { background: #F1F5F9; color: var(--nagarik-muted); }
+
+  .doc-info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .doc-badge-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 2px;
+  }
+
+  .doc-type-tag {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--nagarik-blue);
+  }
+
+  .doc-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--nagarik-text);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .doc-expiry-date {
+    font-size: 12.5px;
+    color: var(--nagarik-muted);
+    margin-top: 3px;
+  }
+
+  .doc-countdown {
+    text-align: right;
+    flex-shrink: 0;
+  }
+
+  .countdown-pill {
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 800;
+    display: inline-block;
+  }
+  .countdown-pill.overdue { background: var(--nagarik-red-bg); color: var(--nagarik-crimson); }
+  .countdown-pill.soon { background: var(--nagarik-gold-bg); color: var(--nagarik-gold); }
+  .countdown-pill.ok { background: var(--nagarik-green-bg); color: var(--nagarik-green); }
+
+  .doc-delete-btn {
+    background: none;
+    border: none;
+    color: #CBD5E1;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 6px;
+    border-radius: 6px;
+  }
+  .doc-delete-btn:hover { color: var(--nagarik-crimson); }
+
+  /* Expanded Document Details (Nagarik Style) */
+  .doc-detail-view {
+    background: #F8FAFC;
+    border-top: 1px solid var(--nagarik-border);
+    padding: 18px 16px;
+    animation: slideDown 0.15s ease-out;
+  }
+
+  .guide-box {
+    background: #ffffff;
+    border: 1px solid #E2E8F0;
+    border-left: 4px solid var(--nagarik-blue);
+    border-radius: 8px;
+    padding: 12px 14px;
+    margin: 12px 0 16px;
+    font-size: 13px;
+    line-height: 1.5;
+  }
+
+  .guide-portal-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 8px;
+    background: var(--nagarik-blue);
+    color: #ffffff;
+    padding: 7px 14px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 12.5px;
+    font-weight: 700;
+  }
+
+  .history-entry {
+    background: #ffffff;
+    border: 1px solid var(--nagarik-border);
+    border-radius: 8px;
+    padding: 10px 12px;
+    margin-bottom: 8px;
+    font-size: 12.5px;
+  }
+
+  /* Empty State */
+  .empty-state {
+    background: #ffffff;
+    border-radius: 16px;
+    border: 1.5px dashed #CBD5E1;
+    padding: 40px 20px;
+    text-align: center;
+    margin: 20px 0;
+  }
+  .empty-icon { font-size: 42px; margin-bottom: 10px; }
+  .empty-title { font-size: 18px; font-weight: 700; color: var(--nagarik-text); margin-bottom: 6px; }
+  .empty-sub { font-size: 13.5px; color: var(--nagarik-muted); max-width: 380px; margin: 0 auto 18px; }
+
+  /* App Footer */
+  .app-footer {
+    margin-top: 36px;
+    text-align: center;
+    padding-top: 20px;
+    border-top: 1px solid var(--nagarik-border);
+  }
+  .footer-links {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+  }
+  .footer-btn {
+    background: none;
+    border: none;
+    color: var(--nagarik-muted);
+    font-size: 12.5px;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .footer-btn:hover { color: var(--nagarik-blue); }
+  .footer-nepal-badge {
+    font-size: 11.5px;
+    color: #94A3B8;
+  }
+
+  /* Toast Notification */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: #0F172A;
+    color: #ffffff;
+    padding: 12px 20px;
+    border-radius: 30px;
+    font-size: 13.5px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.25s;
+    z-index: 1000;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+  }
+  .toast.show {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateX(-50%) translateY(0);
+  }
+  .toast button {
+    background: none;
+    border: none;
+    color: #38BDF8;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  /* Modals */
+  .modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(4px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    z-index: 200;
+  }
+  .modal-backdrop.open { display: flex; }
+  .modal-card {
+    background: #ffffff;
+    border-radius: 18px;
+    width: 100%;
+    max-width: 480px;
+    padding: 24px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+  .modal-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+  .modal-title { font-size: 18px; font-weight: 800; color: var(--nagarik-navy); }
+  .modal-close { background: none; border: none; font-size: 22px; cursor: pointer; color: var(--nagarik-muted); }
+
+  /* Mobile & Device Responsiveness */
+  @media (max-width: 640px) {
+    .nav-inner {
+      padding: 0 4px;
+    }
+    .emblem-icon {
+      width: 36px;
+      height: 36px;
+      font-size: 19px;
+    }
+    .brand-logo-text {
+      font-size: 19px;
+    }
+    .brand-nepali-sub {
+      font-size: 10px;
+    }
+    .btn-nav-auth {
+      padding: 6px 10px;
+      font-size: 11.5px;
+    }
+    .container {
+      padding: 14px 10px 80px;
+    }
+    .phase-stepper {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 6px;
+    }
+    .phase-days {
+      font-size: 14.5px;
+    }
+    .phase-label {
+      font-size: 10px;
+    }
+    .stats-grid {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+    }
+    .stat-card {
+      padding: 10px 6px;
+    }
+    .stat-card-val {
+      font-size: 20px;
+    }
+    .stat-card-lbl {
+      font-size: 10.5px;
+      margin-top: 4px;
+    }
+    .field-grid {
+      grid-template-columns: 1fr;
+      gap: 0;
+    }
+    .btn-add-nagarik {
+      font-size: 14px;
+      padding: 12px 14px;
+    }
+    .doc-card-inner {
+      padding: 12px;
+      gap: 10px;
+    }
+    .doc-icon-badge {
+      width: 40px;
+      height: 40px;
+      font-size: 20px;
+    }
+    .doc-title {
+      font-size: 14.5px;
+    }
+    .doc-expiry-date {
+      font-size: 11.5px;
+    }
+    .countdown-pill {
+      font-size: 10.5px;
+      padding: 4px 8px;
+    }
+    .modal-card {
+      padding: 18px 14px;
+      border-radius: 14px;
+    }
+    .footer-links {
+      gap: 10px;
+    }
+    .footer-btn {
+      font-size: 11.5px;
+    }
+  }
+
+  @media (max-width: 380px) {
+    .brand-nepali-sub {
+      display: none;
+    }
+    .stats-grid {
+      grid-template-columns: 1fr;
+      gap: 6px;
+    }
+    .stat-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 14px;
+    }
+    .stat-card-lbl {
+      margin-top: 0;
+    }
+  }
+</style>
+</head>
+<body>
+
+<!-- Nagarik App Style Top Bar with MIYAD Branding -->
+<nav class="nagarik-navbar">
+  <div class="nav-inner">
+    <div class="brand-group">
+      <div class="emblem-icon">🇳🇵</div>
+      <div class="brand-title">
+        <div class="brand-logo-text">
+          MIYAD <span class="brand-badge">म्याद</span>
+        </div>
+        <div class="brand-nepali-sub">राष्ट्रिय नवीकरण दर्ता (National Renewal Register)</div>
+      </div>
+    </div>
+    <div class="nav-user-actions">
+      <button class="btn-nav-auth" id="navAuthBtn">Sign In / दर्ता</button>
+    </div>
+  </div>
+</nav>
+
+<div class="container">
+  <!-- 4-Phase Email Reminder Schedule Indicator (30, 15, 5, 1 Days) -->
+  <div class="reminder-schedule-banner">
+    <div class="banner-header">
+      <div class="banner-title">
+        <span>🔔</span> ४-चरण स्वचालित इमेल अलर्ट (Email Reminder System)
+      </div>
+      <div class="banner-status-pill" id="scheduleUserStatus">Active</div>
+    </div>
+    <div class="phase-stepper">
+      <div class="phase-step active">
+        <div class="phase-days">30 Days</div>
+        <div class="phase-label">1st Alert (१ महिना)</div>
+      </div>
+      <div class="phase-step active">
+        <div class="phase-days">15 Days</div>
+        <div class="phase-label">2nd Alert (१५ दिन)</div>
+      </div>
+      <div class="phase-step active">
+        <div class="phase-days">5 Days</div>
+        <div class="phase-label">Urgent (५ दिन)</div>
+      </div>
+      <div class="phase-step active">
+        <div class="phase-days">1 Day</div>
+        <div class="phase-label">Final Call (१ दिन)</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Primary Action -->
+  <button class="btn-add-nagarik" id="toggleAddBtn">
+    <span style="font-size: 18px;">+</span> नयाँ कागजात / सेवा थप्नुहोस् (Add Renewal)
+  </button>
+
+  <!-- Add Document Form Panel -->
+  <div class="nagarik-panel" id="addPanel">
+    <div class="form-title">
+      <span>📄</span> कागजातको विवरण प्रविष्ट गर्नुहोस् (Document Details)
+    </div>
+    <div class="field-grid">
+      <div class="field">
+        <label for="fType">कागजातको प्रकार (Document Type)</label>
+        <select id="fType">
+          <option value="Driving License">🚗 Driving License (सवारी चालक अनुमतिपत्र)</option>
+          <option value="Bluebook / Tax">🏍️ Bluebook / Vehicle Tax (सवारी कर / दर्ता)</option>
+          <option value="Insurance">🛡️ Insurance (बीमा - सवारी / स्वास्थ्य)</option>
+          <option value="Passport">🛂 Passport (राहदानी)</option>
+          <option value="Warranty">📦 Warranty (वारेन्टी)</option>
+          <option value="Subscription">📺 Subscription (सब्सक्रिप्सन)</option>
+          <option value="Other">📝 Other (अन्य)</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="fDate">म्याद सकिने मिति (Expiry Date)</label>
+        <input type="date" id="fDate" required />
+      </div>
+    </div>
+    <div class="field">
+      <label for="fTitle">कागजात / सवारीको नाम (Label / Vehicle No.)</label>
+      <input type="text" id="fTitle" placeholder="e.g. Ba 2 Pa 4521, Smart License, or Shikhar Insurance" required />
+    </div>
+    <div class="field">
+      <label for="fNote">थप जानकारी / कार्यालय (Optional Note)</label>
+      <input type="text" id="fNote" placeholder="e.g. यातायात व्यवस्था कार्यालय एकान्तकुना / Radhe Radhe" />
+    </div>
+    <div class="form-actions">
+      <button class="btn-submit" id="saveBtn">दर्ता गर्नुहोस् (Save Renewal)</button>
+      <button class="btn-cancel" id="cancelBtn">रद्द (Cancel)</button>
+    </div>
+  </div>
+
+  <!-- Summary Statistics -->
+  <div class="service-section-title">
+    <span>📊 नवीकरण स्थिति (Overview)</span>
+  </div>
+  <div class="stats-grid" id="statsGrid">
+    <div class="stat-card overdue">
+      <div class="stat-card-val" id="statOverdue">0</div>
+      <div class="stat-card-lbl">म्याद नाघेको (Overdue)</div>
+    </div>
+    <div class="stat-card soon">
+      <div class="stat-card-val" id="statSoon">0</div>
+      <div class="stat-card-lbl">सकिने बेला (Due Soon)</div>
+    </div>
+    <div class="stat-card tracked">
+      <div class="stat-card-val" id="statTotal">0</div>
+      <div class="stat-card-lbl">जम्मा दर्ता (Total)</div>
+    </div>
+  </div>
+
+  <!-- Document List / Content -->
+  <div class="service-section-title">
+    <span>📑 दर्ता गरिएका कागजातहरू (Tracked Items)</span>
+  </div>
+  <div id="content" class="document-list">
+    <div style="text-align: center; padding: 40px; color: var(--nagarik-muted);">लोड हुँदैछ... (Loading your register...)</div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="app-footer">
+    <div class="footer-links">
+      <button class="footer-btn" id="notifSettingsBtn">🔔 Email Alert Preferences</button>
+      <a class="footer-btn" href="privacy.html">🔒 Privacy & Data Safety</a>
+    </div>
+    <div class="footer-nepal-badge">
+      <strong>MIYAD (म्याद)</strong> &bull; Developed by Pratik
+    </div>
+  </footer>
+</div>
+
+<!-- Auth Modal -->
+<div class="modal-backdrop" id="authModal">
+  <div class="modal-card">
+    <div class="modal-head">
+      <div class="modal-title" id="authModalTitle">नागरिक खातामा साइन-इन (Sign In)</div>
+      <button class="modal-close close-auth-modal">&times;</button>
+    </div>
+    <p style="font-size: 13px; color: var(--nagarik-muted); margin-bottom: 16px;">
+      ३०, १५, ५ र १ दिन अगाडि इमेल अलर्ट पाउन र आफ्नो कागजात सुरक्षित राख्न खाता खोल्नुहोस्।
+    </p>
+    <div class="field">
+      <label for="authEmail">इमेल ठेगाना (Email Address)</label>
+      <input type="email" id="authEmail" placeholder="name@example.com" />
+    </div>
+    <div class="field">
+      <label for="authPassword">गोप्य पासवर्ड (Password)</label>
+      <input type="password" id="authPassword" placeholder="••••••••" />
+    </div>
+    <div class="form-actions" style="margin-top: 16px;">
+      <button class="btn-submit" id="submitAuthBtn">Sign In</button>
+      <button class="btn-cancel close-auth-modal">Cancel</button>
+    </div>
+    <div style="text-align: center; margin-top: 14px; font-size: 13px;">
+      <span id="authTogglePrompt" style="color: var(--nagarik-muted);">खाता छैन?</span>
+      <a href="#" id="toggleAuthModeBtn" style="color: var(--nagarik-blue); font-weight: 700; margin-left: 4px;">नयाँ दर्ता (Sign Up Free)</a>
+    </div>
+  </div>
+</div>
+
+<!-- Notification Settings Modal -->
+<div class="modal-backdrop" id="notifModal">
+  <div class="modal-card">
+    <div class="modal-head">
+      <div class="modal-title">इमेल अलर्ट सेटिङ (Reminder Settings)</div>
+      <button class="modal-close close-notif-modal">&times;</button>
+    </div>
+    <p style="font-size: 13px; color: var(--nagarik-muted); margin-bottom: 14px;">
+      नवीकरणको म्याद आउनु भन्दा <strong>३० दिन, १५ दिन, ५ दिन र १ दिन</strong> अगाडि बिहान ०७:३० बजे स्वचालित अलर्ट पठाइनेछ।
+    </p>
+    <div class="field">
+      <label for="notifEmailInput">अलर्ट पाउने इमेल (Notification Email)</label>
+      <input type="email" id="notifEmailInput" placeholder="yourname@gmail.com" />
+    </div>
+    <div class="form-actions" style="margin-top: 16px;">
+      <button class="btn-submit" id="saveNotifBtn">सुरक्षित गर्नुहोस् (Save Preference)</button>
+      <button class="btn-cancel close-notif-modal">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast">
+  <span id="toastMsg">Saved</span>
+  <button id="undoBtn">Undo</button>
+</div>
+
+<script>
+(function() {
+  var STORAGE_FALLBACK_KEY = 'miyad-renewals-data';
+  var TYPE_ICONS = {
+    'Driving License': { icon: '🚗', cls: 'type-license' },
+    'Bluebook / Tax': { icon: '🏍️', cls: 'type-vehicle' },
+    'Insurance': { icon: '🛡️', cls: 'type-insurance' },
+    'Passport': { icon: '🛂', cls: 'type-passport' },
+    'Warranty': { icon: '📦', cls: 'type-other' },
+    'Subscription': { icon: '📺', cls: 'type-other' },
+    'Other': { icon: '📝', cls: 'type-other' }
+  };
+
+  var TYPE_INFO = {
+    'Driving License': {
+      note: 'यातायात व्यवस्था कार्यालय वा नागरिक एप (Nagarik App) मार्फत अनलाइन नवीकरण गर्नुहोस्।',
+      linkLabel: 'नागरिक एप खोल्नुहोस् (Open Nagarik App)',
+      linkUrl: 'https://web.nagarikapp.gov.np/'
+    },
+    'Bluebook / Tax': {
+      note: 'सवारी कर तथा ब्लुबुक नवीकरण नागरिक एप वा प्रदेश यातायात कार्यालयबाट गर्न सकिन्छ।',
+      linkLabel: 'सवारी कर तिर्नुहोस् (Nagarik App TMIS)',
+      linkUrl: 'https://web.nagarikapp.gov.np/'
+    },
+    'Insurance': {
+      note: 'आफ्नो बीमा कम्पनीमार्फत सिधै नवीकरण गर्नुहोस्। तेस्रो पक्ष बीमा ब्लुबुकसँगै जोडिन्छ।',
+      linkLabel: '',
+      linkUrl: ''
+    },
+    'Passport': {
+      note: 'राहदानी विभागको आधिकारिक पोर्टलबाट Online Pre-enrollment गरी बायोमेट्रिक मिति लिनुहोस्।',
+      linkLabel: 'राहदानी विभाग (Dept. of Passports)',
+      linkUrl: 'https://nepalpassport.gov.np/'
+    },
+    'Warranty': {
+      note: 'सम्बन्धित शोरुम वा सेवा केन्द्रमा बिल र वारेन्टी कार्ड लिएर सम्पर्क गर्नुहोस्।',
+      linkLabel: '',
+      linkUrl: ''
+    },
+    'Subscription': {
+      note: 'सम्बन्धित प्लेटफर्म वा डलर कार्डमार्फत नवीकरण गर्नुहोस्।',
+      linkLabel: '',
+      linkUrl: ''
+    },
+    'Other': {
+      note: 'सम्बन्धित कागजातको आधिकारिक कार्यालयबाट नवीकरण गर्नुहोस्।',
+      linkLabel: '',
+      linkUrl: ''
+    }
+  };
+
+  var SAMPLE_ITEMS = [
+    {
+      type: "Driving License",
+      title: "Smart Driving License (बागमती)",
+      expiryDate: "2026-10-15",
+      note: "यातायात कार्यालय एकान्तकुना",
+      history: [{ previousExpiry: "2021-10-15", renewedOn: "2021-10-10", cost: 1500, provider: "DOTM Ekantakuna" }]
+    },
+    {
+      type: "Bluebook / Tax",
+      title: "Pulsar 220 (बा २ प ४५२१)",
+      expiryDate: "2026-09-30",
+      note: "सवारी कर र तेस्रो पक्ष बीमा नागरिक एपबाट तिर्न सकिन्छ",
+      history: [{ previousExpiry: "2025-09-30", renewedOn: "2025-09-25", cost: 4500, provider: "Nagarik App" }]
+    },
+    {
+      type: "Insurance",
+      title: "Comprehensive Bike Insurance",
+      expiryDate: "2026-09-22",
+      note: "शिखर इन्स्योरेन्स",
+      history: []
+    },
+    {
+      type: "Passport",
+      title: "ई-पासपोर्ट (E-Passport)",
+      expiryDate: "2027-04-10",
+      note: "त्रिपुरेश्वर राहदानी विभाग",
+      history: []
+    }
+  ];
+
+  var items = [];
+  var supabaseClient = null;
+  var currentUser = null;
+  var isAuthModeSignUp = false;
+  var expandedId = null;
+  var pendingDeletes = {};
+  var undoQueue = null;
+
+  var contentEl = document.getElementById('content');
+  var addPanel = document.getElementById('addPanel');
+  var authModal = document.getElementById('authModal');
+  var notifModal = document.getElementById('notifModal');
+  var backupModal = document.getElementById('backupModal');
+  var navAuthBtn = document.getElementById('navAuthBtn');
+  var scheduleUserStatus = document.getElementById('scheduleUserStatus');
+
+  function todayMidnight() {
+    var n = new Date();
+    return new Date(n.getFullYear(), n.getMonth(), n.getDate());
+  }
+  function todayIso() {
+    var d = todayMidnight();
+    var mm = ('0' + (d.getMonth() + 1)).slice(-2);
+    var dd = ('0' + d.getDate()).slice(-2);
+    return d.getFullYear() + '-' + mm + '-' + dd;
+  }
+  function daysUntil(dateStr) {
+    var target = new Date(dateStr + 'T00:00:00');
+    return Math.round((target - todayMidnight()) / 86400000);
+  }
+  function escapeHtml(s) {
+    var d = document.createElement('div');
+    d.textContent = s || '';
+    return d.innerHTML;
+  }
+
+  function render() {
+    var visible = items.filter(function(it) { return !pendingDeletes[it.id]; });
+
+    if (visible.length === 0) {
+      document.getElementById('statOverdue').textContent = '0';
+      document.getElementById('statSoon').textContent = '0';
+      document.getElementById('statTotal').textContent = '0';
+      contentEl.innerHTML =
+        '<div class="empty-state">' +
+          '<div class="empty-icon">🇳🇵</div>' +
+          '<div class="empty-title">कुनै कागजात दर्ता गरिएको छैन</div>' +
+          '<div class="empty-sub">सवारी चालक अनुमतिपत्र, ब्लुबुक, पासपोर्ट र बीमाको म्याद समयमै ट्रयाक गर्न नयाँ दर्ता गर्नुहोस्।</div>' +
+          '<button class="btn-submit" id="emptyAddBtn" style="max-width:260px;margin:0 auto;">+ नयाँ कागजात थप्नुहोस् (Add First)</button>' +
+        '</div>';
+      document.getElementById('emptyAddBtn').addEventListener('click', function() {
+        addPanel.classList.add('open');
+        document.getElementById('fTitle').focus();
+      });
+      return;
+    }
+
+    var sorted = visible.slice().sort(function(a, b) {
+      return daysUntil(a.expiryDate) - daysUntil(b.expiryDate);
+    });
+
+    var overdue = 0, soon = 0;
+    var html = sorted.map(function(it) {
+      var days = daysUntil(it.expiryDate);
+      var status = 'ok';
+      var pillText = days + ' दिन बाँकी';
+
+      if (days < 0) {
+        overdue++;
+        status = 'overdue';
+        pillText = Math.abs(days) + ' दिन नाघ्यो';
+      } else if (days <= 30) {
+        soon++;
+        status = 'soon';
+        pillText = days === 0 ? 'आज सकिँदै' : days + ' दिन बाँकी';
+      }
+
+      var iconInfo = TYPE_ICONS[it.type] || TYPE_ICONS['Other'];
+      var isOpen = expandedId === it.id;
+
+      var card =
+        '<div class="doc-card">' +
+          '<div class="doc-card-inner" data-id="' + it.id + '">' +
+            '<div class="doc-icon-badge ' + iconInfo.cls + '">' + iconInfo.icon + '</div>' +
+            '<div class="doc-info">' +
+              '<div class="doc-badge-row">' +
+                '<span class="doc-type-tag">' + escapeHtml(it.type) + '</span>' +
+              '</div>' +
+              '<div class="doc-title">' + escapeHtml(it.title) + '</div>' +
+              '<div class="doc-expiry-date">म्याद: ' + escapeHtml(it.expiryDate) + (it.note ? ' &bull; ' + escapeHtml(it.note) : '') + '</div>' +
+            '</div>' +
+            '<div class="doc-countdown">' +
+              '<span class="countdown-pill ' + status + '">' + pillText + '</span>' +
+            '</div>' +
+            '<button class="doc-delete-btn" data-id="' + it.id + '" title="Delete">&times;</button>' +
+          '</div>' +
+          (isOpen ? renderDetail(it) : '') +
+        '</div>';
+
+      return card;
+    }).join('');
+
+    document.getElementById('statOverdue').textContent = overdue;
+    document.getElementById('statSoon').textContent = soon;
+    document.getElementById('statTotal').textContent = sorted.length;
+    contentEl.innerHTML = html;
+
+    Array.prototype.forEach.call(contentEl.querySelectorAll('.doc-card-inner'), function(el) {
+      el.addEventListener('click', function(e) {
+        if (e.target.classList.contains('doc-delete-btn')) return;
+        var id = el.getAttribute('data-id');
+        expandedId = expandedId === id ? null : id;
+        render();
+      });
+    });
+
+    Array.prototype.forEach.call(contentEl.querySelectorAll('.doc-delete-btn'), function(btn) {
+      btn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        handleDelete(btn.getAttribute('data-id'));
+      });
+    });
+
+    var saveBtn = contentEl.querySelector('.detail-save');
+    if (saveBtn) saveBtn.addEventListener('click', handleDetailSave);
+    var cancelBtn = contentEl.querySelector('.detail-cancel');
+    if (cancelBtn) cancelBtn.addEventListener('click', function() { expandedId = null; render(); });
+  }
+
+  function renderDetail(it) {
+    var info = TYPE_INFO[it.type] || TYPE_INFO['Other'];
+    var linkBtn = info.linkUrl
+      ? '<br/><a href="' + info.linkUrl + '" target="_blank" rel="noopener" class="guide-portal-btn">' + escapeHtml(info.linkLabel) + ' &rarr;</a>'
+      : '';
+
+    var historyHtml = '';
+    if (it.history && it.history.length) {
+      historyHtml = '<div style="margin: 12px 0 6px;"><strong style="font-size:12.5px;color:var(--nagarik-navy);">अघिल्लो नवीकरण इतिहास (Past Renewals):</strong></div>' +
+        it.history.slice().reverse().map(function(h) {
+          var costStr = h.cost ? ' &bull; रु ' + h.cost : '';
+          var provStr = h.provider ? ' &bull; ' + escapeHtml(h.provider) : '';
+          return '<div class="history-entry"><strong>' + escapeHtml(h.renewedOn) + '</strong> मा नवीकरण भयो (अघिल्लो म्याद: ' + escapeHtml(h.previousExpiry) + costStr + provStr + ')</div>';
+        }).join('');
+    }
+
+    return (
+      '<div class="doc-detail-view" data-id="' + it.id + '" data-original-expiry="' + it.expiryDate + '">' +
+        '<div class="field-grid">' +
+          '<div class="field">' +
+            '<label>नयाँ म्याद मिति (New Expiry Date)</label>' +
+            '<input type="date" class="d-date" value="' + it.expiryDate + '" />' +
+          '</div>' +
+          '<div class="field">' +
+            '<label>सवारी / कागजातको नाम</label>' +
+            '<input type="text" class="d-title" value="' + escapeHtml(it.title) + '" />' +
+          '</div>' +
+        '</div>' +
+        '<div class="field">' +
+          '<label>कैफियत (Note)</label>' +
+          '<input type="text" class="d-note" value="' + escapeHtml(it.note || '') + '" />' +
+        '</div>' +
+        '<div class="field-grid">' +
+          '<div class="field">' +
+            '<label>नवीकरण दस्तुर रु (Renewal Cost, optional)</label>' +
+            '<input type="number" class="d-cost" placeholder="0" min="0" />' +
+          '</div>' +
+          '<div class="field">' +
+            '<label>नवीकरण गरिएको कार्यालय / एप (Provider)</label>' +
+            '<input type="text" class="d-provider" placeholder="e.g. Nagarik App, TMIS" />' +
+          '</div>' +
+        '</div>' +
+        '<div class="form-actions">' +
+          '<button class="btn-submit detail-save">परिवर्तन सुरक्षित गर्नुहोस् (Save Changes)</button>' +
+          '<button class="btn-cancel detail-cancel">रद्द</button>' +
+        '</div>' +
+        '<div class="guide-box">' +
+          '<strong>आधिकारिक नवीकरण प्रक्रिया:</strong><br/>' +
+          escapeHtml(info.note) + linkBtn +
+        '</div>' +
+        historyHtml +
+      '</div>'
+    );
+  }
+
+  async function handleDetailSave() {
+    var view = contentEl.querySelector('.doc-detail-view');
+    if (!view) return;
+    var id = view.getAttribute('data-id');
+    var originalExpiry = view.getAttribute('data-original-expiry');
+
+    var newDate = view.querySelector('.d-date').value;
+    var newTitle = view.querySelector('.d-title').value.trim();
+    var newNote = view.querySelector('.d-note').value.trim();
+    var costRaw = view.querySelector('.d-cost').value;
+    var provider = view.querySelector('.d-provider').value.trim();
+
+    if (!newTitle || !newDate) return;
+
+    var updates = { title: newTitle, expiryDate: newDate, note: newNote };
+    var renewed = newDate !== originalExpiry;
+    var newHist = null;
+
+    if (renewed) {
+      newHist = {
+        previousExpiry: originalExpiry,
+        renewedOn: todayIso(),
+        cost: costRaw ? Number(costRaw) : null,
+        provider: provider || ''
+      };
+    }
+
+    await updateItem(id, updates, newHist);
+    expandedId = null;
+    showToast(renewed ? 'नवीकरण दर्ता भयो (Renewal logged)' : 'परिवर्तन सुरक्षित गरियो');
+  }
+
+  async function loadFromSupabase() {
+    if (!supabaseClient || !currentUser) {
+      loadLocal();
+      render();
+      return;
+    }
+    try {
+      var res = await supabaseClient
+        .from('renewals')
+        .select('id, type, title, expiry_date, note, created_at, renewal_history(id, previous_expiry, renewed_on, cost, provider)')
+        .order('expiry_date', { ascending: true });
+
+      if (res.error) throw res.error;
+
+      items = (res.data || []).map(function(r) {
+        return {
+          id: r.id,
+          type: r.type,
+          title: r.title,
+          expiryDate: r.expiry_date,
+          note: r.note,
+          history: (r.renewal_history || []).map(function(h) {
+            return {
+              id: h.id,
+              previousExpiry: h.previous_expiry,
+              renewedOn: h.renewed_on,
+              cost: h.cost,
+              provider: h.provider
+            };
+          })
+        };
+      });
+      render();
+    } catch(e) {
+      console.warn('Supabase fetch failed:', e);
+      loadLocal();
+      render();
+    }
+  }
+
+  function saveLocal() {
+    try { localStorage.setItem(STORAGE_FALLBACK_KEY, JSON.stringify(items)); } catch(e) {}
+  }
+  function loadLocal() {
+    try {
+      var raw = localStorage.getItem(STORAGE_FALLBACK_KEY);
+      items = raw ? JSON.parse(raw) : [];
+    } catch(e) { items = []; }
+  }
+
+  async function addItem(data) {
+    if (currentUser && supabaseClient) {
+      try {
+        var res = await supabaseClient.from('renewals').insert([{
+          user_id: currentUser.id,
+          type: data.type,
+          title: data.title,
+          expiry_date: data.expiryDate,
+          note: data.note || null
+        }]).select('id').single();
+
+        if (res.error) throw res.error;
+        data.id = res.data.id;
+
+        if (data.history && data.history.length) {
+          var rows = data.history.map(function(h) {
+            return {
+              renewal_id: data.id,
+              previous_expiry: h.previousExpiry,
+              renewed_on: h.renewedOn || todayIso(),
+              cost: h.cost ? Number(h.cost) : null,
+              provider: h.provider || null
+            };
+          });
+          await supabaseClient.from('renewal_history').insert(rows);
+        }
+
+        items.push(data);
+        render();
+        return;
+      } catch(e) {
+        console.error('Supabase save error:', e);
+      }
+    }
+
+    data.id = 'local-' + Date.now() + '-' + Math.random().toString(36).slice(2, 6);
+    items.push(data);
+    saveLocal();
+    render();
+  }
+
+  async function updateItem(id, updates, newHist) {
+    var idx = items.findIndex(function(it) { return it.id === id; });
+    if (idx > -1) {
+      var hist = (items[idx].history || []).slice();
+      if (newHist) hist.push(newHist);
+      items[idx] = Object.assign({}, items[idx], updates, { history: hist });
+    }
+
+    if (currentUser && supabaseClient) {
+      try {
+        await supabaseClient.from('renewals').update({
+          title: updates.title,
+          expiry_date: updates.expiryDate,
+          note: updates.note || null
+        }).eq('id', id);
+
+        if (newHist) {
+          await supabaseClient.from('renewal_history').insert([{
+            renewal_id: id,
+            previous_expiry: newHist.previousExpiry,
+            renewed_on: newHist.renewedOn,
+            cost: newHist.cost,
+            provider: newHist.provider || null
+          }]);
+        }
+      } catch(e) { console.error('Update error:', e); }
+    } else {
+      saveLocal();
+    }
+    render();
+  }
+
+  async function removeItem(id) {
+    items = items.filter(function(it) { return it.id !== id; });
+    if (currentUser && supabaseClient) {
+      try { await supabaseClient.from('renewals').delete().eq('id', id); } catch(e) {}
+    } else {
+      saveLocal();
+    }
+    render();
+  }
+
+  function handleDelete(id) {
+    var it = items.find(function(i) { return i.id === id; });
+    if (!it) return;
+    if (expandedId === id) expandedId = null;
+
+    if (undoQueue) { clearTimeout(undoQueue.timer); finalizeDelete(undoQueue.id); }
+
+    pendingDeletes[id] = true;
+    render();
+    showToast(it.title + ' हटाइयो (Removed)', true);
+
+    undoQueue = {
+      id: id,
+      timer: setTimeout(function() { finalizeDelete(id); }, 5000)
+    };
+  }
+
+  function finalizeDelete(id) {
+    delete pendingDeletes[id];
+    removeItem(id);
+    if (undoQueue && undoQueue.id === id) undoQueue = null;
+  }
+
+  function showToast(msg, withUndo) {
+    var t = document.getElementById('toast');
+    document.getElementById('toastMsg').textContent = msg;
+    document.getElementById('undoBtn').style.display = withUndo ? 'inline-block' : 'none';
+    t.classList.add('show');
+    setTimeout(function() { t.classList.remove('show'); }, 4000);
+  }
+
+  function loadSampleData() {
+    SAMPLE_ITEMS.forEach(function(s) {
+      addItem(JSON.parse(JSON.stringify(s)));
+    });
+    showToast('नमुना कागजात लोड गरियो!');
+  }
+
+  // Event Listeners
+  document.getElementById('undoBtn').addEventListener('click', function() {
+    if (!undoQueue) return;
+    clearTimeout(undoQueue.timer);
+    delete pendingDeletes[undoQueue.id];
+    undoQueue = null;
+    document.getElementById('toast').classList.remove('show');
+    render();
+  });
+
+  document.getElementById('toggleAddBtn').addEventListener('click', function() {
+    addPanel.classList.toggle('open');
+    if (addPanel.classList.contains('open')) document.getElementById('fTitle').focus();
+  });
+  document.getElementById('cancelBtn').addEventListener('click', function() {
+    addPanel.classList.remove('open');
+  });
+
+  document.getElementById('saveBtn').addEventListener('click', function() {
+    var type = document.getElementById('fType').value;
+    var title = document.getElementById('fTitle').value.trim();
+    var expiryDate = document.getElementById('fDate').value;
+    var note = document.getElementById('fNote').value.trim();
+
+    if (!title || !expiryDate) {
+      alert('कागजातको नाम र म्याद मिति अनिवार्य छ।');
+      return;
+    }
+
+    addItem({ type: type, title: title, expiryDate: expiryDate, note: note, history: [] });
+
+    document.getElementById('fTitle').value = '';
+    document.getElementById('fNote').value = '';
+    document.getElementById('fDate').value = '';
+    addPanel.classList.remove('open');
+    showToast('नयाँ कागजात दर्ता भयो');
+  });
+
+  // Auth Modal Controls
+  function openAuth(isSignUp) {
+    isAuthModeSignUp = !!isSignUp;
+    document.getElementById('authModalTitle').textContent = isAuthModeSignUp ? 'नयाँ नागरिक खाता दर्ता (Sign Up)' : 'नागरिक खातामा साइन-इन (Sign In)';
+    document.getElementById('submitAuthBtn').textContent = isAuthModeSignUp ? 'खाता खोल्नुहोस् (Sign Up)' : 'साइन-इन (Sign In)';
+    document.getElementById('authTogglePrompt').textContent = isAuthModeSignUp ? 'पहिले नै खाता छ?' : 'खाता छैन?';
+    document.getElementById('toggleAuthModeBtn').textContent = isAuthModeSignUp ? 'साइन-इन गर्नुहोस्' : 'नयाँ दर्ता (Sign Up Free)';
+    authModal.classList.add('open');
+  }
+
+  navAuthBtn.addEventListener('click', async function() {
+    if (currentUser) {
+      await supabaseClient.auth.signOut();
+      currentUser = null;
+      navAuthBtn.textContent = 'Sign In / दर्ता';
+      scheduleUserStatus.textContent = 'Guest Mode';
+      scheduleUserStatus.style.background = '#FEF3C7';
+      scheduleUserStatus.style.color = '#D97706';
+      loadLocal();
+      render();
+      showToast('साइन-आउट गरियो');
+    } else {
+      openAuth(false);
+    }
+  });
+
+  document.getElementById('toggleAuthModeBtn').addEventListener('click', function(e) {
+    e.preventDefault();
+    openAuth(!isAuthModeSignUp);
+  });
+
+  Array.prototype.forEach.call(document.querySelectorAll('.close-auth-modal'), function(btn) {
+    btn.addEventListener('click', function() { authModal.classList.remove('open'); });
+  });
+
+  document.getElementById('submitAuthBtn').addEventListener('click', async function() {
+    var email = document.getElementById('authEmail').value.trim();
+    var password = document.getElementById('authPassword').value;
+
+    if (!email || !password) {
+      alert('इमेल र पासवर्ड भर्नुहोस्।');
+      return;
+    }
+
+    try {
+      if (isAuthModeSignUp) {
+        var res = await supabaseClient.auth.signUp({
+          email: email,
+          password: password,
+          options: { emailRedirectTo: window.location.origin || 'https://miyad.yadavpratik.com.np' }
+        });
+        if (res.error) throw res.error;
+        if (res.data.session) {
+          currentUser = res.data.session.user;
+          showToast('खाता सफलतापूर्वक दर्ता भयो!');
+        } else {
+          showToast('इमेलमा भेरिफिकेसन लिंक पठाइएको छ!');
+        }
+      } else {
+        var resIn = await supabaseClient.auth.signInWithPassword({ email: email, password: password });
+        if (resIn.error) throw resIn.error;
+        currentUser = resIn.data.user;
+        showToast('साइन-इन सफल भयो!');
+      }
+
+      authModal.classList.remove('open');
+      updateUserNav();
+      await loadFromSupabase();
+    } catch(err) {
+      alert('Authentication Error: ' + err.message);
+    }
+  });
+
+  function updateUserNav() {
+    if (currentUser) {
+      navAuthBtn.textContent = '👤 ' + currentUser.email.split('@')[0] + ' (Sign Out)';
+      scheduleUserStatus.textContent = 'Active: ' + currentUser.email;
+      scheduleUserStatus.style.background = 'var(--nagarik-green-bg)';
+      scheduleUserStatus.style.color = 'var(--nagarik-green)';
+    } else {
+      navAuthBtn.textContent = 'Sign In / दर्ता';
+      scheduleUserStatus.textContent = 'Active (4 Phases: 30, 15, 5, 1 days)';
+    }
+  }
+
+  // Notification Email Modal
+  document.getElementById('notifSettingsBtn').addEventListener('click', function() {
+    if (currentUser) {
+      document.getElementById('notifEmailInput').value = currentUser.email;
+    }
+    notifModal.classList.add('open');
+  });
+
+  Array.prototype.forEach.call(document.querySelectorAll('.close-notif-modal'), function(b) {
+    b.addEventListener('click', function() { notifModal.classList.remove('open'); });
+  });
+
+  document.getElementById('saveNotifBtn').addEventListener('click', async function() {
+    var email = document.getElementById('notifEmailInput').value.trim();
+    if (!email) return;
+
+    if (currentUser && supabaseClient) {
+      try {
+        await supabaseClient.from('notification_settings').upsert([{
+          user_id: currentUser.id,
+          recipient_email: email,
+          reminder_days: [30, 15, 5, 1],
+          is_active: true
+        }]);
+        showToast('इमेल अलर्ट सेटिङ सुरक्षित भयो (३०, १५, ५ र १ दिन)!');
+      } catch(e) {
+        showToast('क्लाउड सेभ त्रुटि भयो');
+      }
+    } else {
+      showToast('इमेल सुरक्षित गरियो');
+    }
+    notifModal.classList.remove('open');
+  });
+
+  // Init App
+  async function init() {
+    var cfg = window.RENEWAL_CONFIG || {};
+    if (cfg.SUPABASE_URL && cfg.SUPABASE_ANON_KEY && window.supabase) {
+      try {
+        supabaseClient = window.supabase.createClient(cfg.SUPABASE_URL, cfg.SUPABASE_ANON_KEY);
+
+        supabaseClient.auth.onAuthStateChange(function(event, session) {
+          currentUser = session ? session.user : null;
+          updateUserNav();
+          if (currentUser) {
+            loadFromSupabase();
+          } else {
+            loadLocal();
+            render();
+          }
+        });
+
+        var sess = await supabaseClient.auth.getSession();
+        if (sess.data && sess.data.session) {
+          currentUser = sess.data.session.user;
+          updateUserNav();
+          await loadFromSupabase();
+        } else {
+          loadLocal();
+          render();
+        }
+      } catch(e) {
+        console.warn('Supabase init error:', e);
+        loadLocal();
+        render();
+      }
+    } else {
+      loadLocal();
+      render();
+    }
+  }
+
+  init();
+})();
+</script>
+</body>
+</html>

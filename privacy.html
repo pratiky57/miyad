@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="ne-NP, en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Privacy Policy & Data Safety — MIYAD (म्याद)</title>
+<meta name="robots" content="index, follow" />
+<link rel="canonical" href="https://miyad.yadavpratik.com.np/privacy.html" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --nagarik-navy: #002B7F;
+    --nagarik-blue: #0C44AC;
+    --nagarik-bg: #F4F7FC;
+    --nagarik-card: #FFFFFF;
+    --nagarik-text: #1E293B;
+    --nagarik-muted: #64748B;
+    --nagarik-border: #E2E8F0;
+    --nagarik-green: #059669;
+    --nagarik-green-bg: #D1FAE5;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--nagarik-bg);
+    color: var(--nagarik-text);
+    font-family: 'Plus Jakarta Sans', 'Mukta', -apple-system, sans-serif;
+    line-height: 1.6;
+    padding-bottom: 60px;
+  }
+
+  .navbar {
+    background: linear-gradient(135deg, var(--nagarik-navy) 0%, var(--nagarik-blue) 100%);
+    color: #fff;
+    padding: 16px 20px;
+  }
+  .nav-inner {
+    max-width: 680px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .nav-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #fff;
+    text-decoration: none;
+    font-weight: 800;
+    font-size: 20px;
+  }
+  .back-btn {
+    color: #fff;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+    background: rgba(255,255,255,0.15);
+    padding: 6px 12px;
+    border-radius: 20px;
+  }
+
+  .content-card {
+    max-width: 680px;
+    margin: 24px auto 0;
+    background: #fff;
+    border-radius: 16px;
+    border: 1px solid var(--nagarik-border);
+    padding: 28px 24px;
+    box-shadow: 0 4px 14px rgba(12, 68, 172, 0.06);
+  }
+
+  h1 { font-size: 24px; font-weight: 800; color: var(--nagarik-navy); margin-bottom: 8px; }
+  .last-updated { font-size: 12.5px; color: var(--nagarik-muted); margin-bottom: 20px; }
+
+  .summary-badge {
+    background: var(--nagarik-green-bg);
+    border: 1px solid #A7F3D0;
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .summary-badge-icon { font-size: 22px; }
+  .summary-badge-text { font-size: 13.5px; color: #065F46; font-weight: 600; }
+
+  h2 { font-size: 16px; font-weight: 700; color: var(--nagarik-navy); margin: 22px 0 8px; }
+  p { font-size: 14px; color: #334155; margin-bottom: 12px; }
+  ul { padding-left: 20px; margin-bottom: 14px; font-size: 14px; color: #334155; }
+  li { margin-bottom: 6px; }
+
+  .footer-note {
+    text-align: center;
+    margin-top: 30px;
+    font-size: 12.5px;
+    color: var(--nagarik-muted);
+  }
+</style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="nav-inner">
+    <a href="/" class="nav-brand">
+      <span>🇳🇵</span> MIYAD (म्याद)
+    </a>
+    <a href="/" class="back-btn">&larr; Back to App</a>
+  </div>
+</nav>
+
+<div class="content-card">
+  <h1>Privacy Policy & Data Security</h1>
+  <div class="last-updated">गोपनीयता नीति &bull; Last updated: September 2026</div>
+
+  <div class="summary-badge">
+    <div class="summary-badge-icon">🔒</div>
+    <div class="summary-badge-text">
+      <strong>Your Data Belongs to You:</strong> We do not sell your personal data, track your location, or display ads. Each user's renewal dates are completely isolated and private.
+    </div>
+  </div>
+
+  <h2>१. हामी कुन जानकारी संकलन गर्छौं? (What Data We Collect)</h2>
+  <p>MIYAD is designed to be minimal and privacy-first. We only store information necessary to provide renewal alerts:</p>
+  <ul>
+    <li><strong>Account Information:</strong> Your registered email address and secure encrypted password hash (managed via Supabase Auth).</li>
+    <li><strong>Renewal Records:</strong> Document types (e.g. Bluebook, Driving License), custom titles/vehicle numbers, expiry dates, and renewal history notes you enter.</li>
+    <li><strong>Notification Preferences:</strong> Your selected email address for receiving automated 30, 15, 5, and 1-day reminders.</li>
+  </ul>
+
+  <h2>२. डेटा सुरक्षा र अलगाव (Database Security & Row-Level Isolation)</h2>
+  <p>Every record in MIYAD is protected with strict PostgreSQL <strong>Row-Level Security (RLS)</strong> policies. This guarantees:</p>
+  <ul>
+    <li>No user can ever view, search, query, or edit documents belonging to another user.</li>
+    <li>All transmission of data between your browser and our servers is encrypted using 256-bit SSL/TLS.</li>
+  </ul>
+
+  <h2>३. स्वचालित इमेल अलर्ट (Email Reminder Policy)</h2>
+  <p>Automated emails are sent strictly for reminder milestones (30 days, 15 days, 5 days, and 1 day before document expiration). We never send spam, marketing campaigns, or third-party promotional messages.</p>
+
+  <h2>४. डेटा मेटाउने अधिकार (Your Right to Delete Data)</h2>
+  <p>You have full control over your information. Deleting any item from your register immediately removes it and its renewal history from our database permanently.</p>
+
+  <h2>५. सम्पर्क (Contact)</h2>
+  <p>If you have any questions regarding privacy or data protection on MIYAD, you can reach out via <a href="https://yadavpratik.com.np" target="_blank" style="color:var(--nagarik-blue);font-weight:600;">yadavpratik.com.np</a>.</p>
+
+  <div class="footer-note">
+    <strong>MIYAD (म्याद)</strong> &bull; Developed by Pratik
+  </div>
+</div>
+
+</body>
+</html>
