@@ -1,0 +1,7 @@
+{
+  "name": "miyad1",
+  "main": "src/index.js",
+  "assets": {
+    "directory": "./"
+  }
+}
